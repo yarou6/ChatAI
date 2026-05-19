@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AvaloniaProject">
+    <option name="projectPerEditor">
+      <map>
+        <entry key="ChatAI/App.axaml" value="ChatAI/ChatAI.csproj" />
+        <entry key="ChatAI/Views/ChatWindow.axaml" value="ChatAI/ChatAI.csproj" />
+        <entry key="ChatAI/Views/MainWindow.axaml" value="ChatAI/ChatAI.csproj" />
+      </map>
+    </option>
+  </component>
+</project>

@@ -1,0 +1,44 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:vm="clr-namespace:ChatAI.ViewModels"
+        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+        x:Class="ChatAI.Views.ChatWindow"
+        x:DataType="vm:ChatWindowViewModel"
+        Title="ChatWindow"
+        WindowStartupLocation="CenterScreen"
+        Height="800"
+        Width="1200">
+    <Grid ColumnDefinitions="70*,30*" RowDefinitions="*,*" >
+            <ScrollViewer Grid.Row="0" Grid.Column="0">
+                <StackPanel>
+                    <TextBlock Text="wqeqwe"></TextBlock>
+                    <ItemsControl ItemsSource="{Binding Messages}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Border Margin="5" Padding="10" Background="LightGray" CornerRadius="5">
+                                    <StackPanel>
+                                        <TextBlock Text="asdasdsad" FontWeight="Bold" Foreground="Blue" />
+                                        <TextBlock Text="dasdasda" TextWrapping="Wrap" />
+                                        <TextBlock Text="dsadasd"
+                                                   HorizontalAlignment="Right" FontSize="10" Foreground="Gray" />
+                                    </StackPanel>
+                                </Border>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </StackPanel>
+            </ScrollViewer>
+        
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+            
+            <TextBox Text="dsada" VerticalContentAlignment="Center"/>
+            <Button Grid.Column="1" Content="Отправить" Padding="10,5"/>
+        </Grid>
+    </Grid>
+</Window>
