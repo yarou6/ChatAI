@@ -3,42 +3,175 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:vm="clr-namespace:ChatAI.ViewModels"
-        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+        xmlns:model="clr-namespace:ChatAI.Models"
+        mc:Ignorable="d" d:DesignWidth="1280" d:DesignHeight="840"
         x:Class="ChatAI.Views.ChatWindow"
-        x:DataType="vm:ChatWindowViewModel"
-        Title="ChatWindow"
+        x:DataType="vm:ChatWindowViewModel" x:CompileBindings="False"
+        Title="ChatAI Neon Client"
         WindowStartupLocation="CenterScreen"
-        Height="800"
-        Width="1200">
-    <Grid ColumnDefinitions="70*,30*" RowDefinitions="*,*" >
-            <ScrollViewer Grid.Row="0" Grid.Column="0">
-                <StackPanel>
-                    <TextBlock Text="wqeqwe"></TextBlock>
-                    <ItemsControl ItemsSource="{Binding Messages}">
-                        <ItemsControl.ItemTemplate>
-                            <DataTemplate>
-                                <Border Margin="5" Padding="10" Background="LightGray" CornerRadius="5">
-                                    <StackPanel>
-                                        <TextBlock Text="asdasdsad" FontWeight="Bold" Foreground="Blue" />
-                                        <TextBlock Text="dasdasda" TextWrapping="Wrap" />
-                                        <TextBlock Text="dsadasd"
-                                                   HorizontalAlignment="Right" FontSize="10" Foreground="Gray" />
-                                    </StackPanel>
-                                </Border>
-                            </DataTemplate>
-                        </ItemsControl.ItemTemplate>
-                    </ItemsControl>
+        WindowState="Maximized"
+        Height="840"
+        Width="1280"
+        Background="#0F031A">
+    <Window.Styles>
+        <Style Selector="TextBlock">
+            <Setter Property="Foreground" Value="#FFE6FF"/>
+        </Style>
+        <Style Selector="TextBox">
+            <Setter Property="Background" Value="#220735"/>
+            <Setter Property="Foreground" Value="#FFE8FF"/>
+            <Setter Property="BorderBrush" Value="#FF49E1"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="CornerRadius" Value="8"/>
+            <Setter Property="Padding" Value="10,8"/>
+        </Style>
+        <Style Selector="Button">
+            <Setter Property="Background" Value="#D000FF"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="BorderBrush" Value="#FF93FF"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="CornerRadius" Value="9"/>
+            <Setter Property="Padding" Value="14,9"/>
+        </Style>
+        <Style Selector="ListBox">
+            <Setter Property="Background" Value="#1A062A"/>
+            <Setter Property="BorderBrush" Value="#FF49E1"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Foreground" Value="#FFE8FF"/>
+            <Setter Property="Padding" Value="4"/>
+        </Style>
+        <Style Selector="ListBoxItem">
+            <Setter Property="Background" Value="#2A0D3F"/>
+            <Setter Property="Foreground" Value="#FFE8FF"/>
+            <Setter Property="Margin" Value="0,0,0,6"/>
+            <Setter Property="Padding" Value="10,7"/>
+            <Setter Property="CornerRadius" Value="8"/>
+            <Setter Property="BorderBrush" Value="#C431FF"/>
+            <Setter Property="BorderThickness" Value="1"/>
+        </Style>
+        <Style Selector="ListBoxItem:selected">
+            <Setter Property="Background" Value="#4B1170"/>
+            <Setter Property="BorderBrush" Value="#FF7CF6"/>
+        </Style>
+    </Window.Styles>
+
+    <Grid RowDefinitions="Auto,Auto,*,Auto" Margin="16" RowSpacing="14">
+        <Border Grid.Row="0" CornerRadius="16" Padding="14,10" Background="#1B0630" BorderBrush="#FF49E1" BorderThickness="1.5">
+            <Grid ColumnDefinitions="Auto,*">
+                <TextBlock Text="ChatAI Neon" FontSize="24" FontWeight="Bold" Foreground="#FF8CFF"/>
+                <TextBlock Grid.Column="1" Text="Realtime chat + local AI" HorizontalAlignment="Right" VerticalAlignment="Center" Foreground="#FFC8FF"/>
+            </Grid>
+        </Border>
+
+        <Grid Grid.Row="1" ColumnDefinitions="2*,3*" ColumnSpacing="14">
+            <Border CornerRadius="14" Padding="14" Background="#251038" BorderBrush="#A800D3" BorderThickness="1.5">
+                <StackPanel Spacing="10">
+                    <TextBlock Text="Connection" FontSize="18" FontWeight="Bold"/>
+                    <TextBlock Text="Server URL"/>
+                    <TextBox Text="{Binding ServerUrl}"/>
+                    <Grid ColumnDefinitions="Auto,*" ColumnSpacing="8">
+                        <TextBlock Text="Login" VerticalAlignment="Center"/>
+                        <TextBox Grid.Column="1" Text="{Binding Login}"/>
+                    </Grid>
+                    <Grid ColumnDefinitions="Auto,*" ColumnSpacing="8">
+                        <TextBlock Text="Password" VerticalAlignment="Center"/>
+                        <TextBox Grid.Column="1" Text="{Binding Password}"/>
+                    </Grid>
+                    <Grid ColumnDefinitions="*,*" ColumnSpacing="10">
+                        <Button Content="Register" Click="RegisterClick"/>
+                        <Button Grid.Column="1" Content="Connect" Click="ConnectClick"/>
+                    </Grid>
                 </StackPanel>
-            </ScrollViewer>
-        
-        <Grid Grid.Row="1">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*" />
-                <ColumnDefinition Width="Auto" />
-            </Grid.ColumnDefinitions>
-            
-            <TextBox Text="dsada" VerticalContentAlignment="Center"/>
-            <Button Grid.Column="1" Content="Отправить" Padding="10,5"/>
+            </Border>
+
+            <Border Grid.Column="1" CornerRadius="14" Padding="14" Background="#251038" BorderBrush="#A800D3" BorderThickness="1.5">
+                <StackPanel Spacing="10">
+                    <TextBlock Text="Chat Control" FontSize="18" FontWeight="Bold"/>
+                    <Grid ColumnDefinitions="Auto,*,Auto,*" ColumnSpacing="8">
+                        <TextBlock Text="Chat ID" VerticalAlignment="Center"/>
+                        <TextBox Grid.Column="1" Text="{Binding ChatIdText}"/>
+                        <TextBlock Grid.Column="2" Text="New chat" VerticalAlignment="Center"/>
+                        <TextBox Grid.Column="3" Text="{Binding NewChatTitle}"/>
+                    </Grid>
+                    <Grid ColumnDefinitions="*,*,*" ColumnSpacing="10">
+                        <Button Content="Create Chat" Click="CreateChatClick"/>
+                        <Button Grid.Column="1" Content="Refresh Messages" Click="RefreshClick"/>
+                        <Button Grid.Column="2" Content="Load Chats" Click="LoadChatsClick"/>
+                    </Grid>
+                    <TextBlock Text="My Chats" FontWeight="Bold"/>
+                    <Border CornerRadius="8" Padding="6" Background="#1C072B" BorderBrush="#FF53E7" BorderThickness="1">
+                        <ListBox Name="ChatsList"
+                                 Height="110"
+                                 ItemsSource="{Binding Chats}"
+                                 SelectionChanged="ChatsSelectionChanged">
+                            <ListBox.ItemTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding Title}" />
+                                </DataTemplate>
+                            </ListBox.ItemTemplate>
+                        </ListBox>
+                    </Border>
+                    <Button Content="Clear Chat View" Click="ClearChatViewClick"/>
+                    <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="8">
+                        <TextBlock Text="Members" VerticalAlignment="Center"/>
+                        <TextBox Grid.Column="1" Text="{Binding NewMembersLogins}" PlaceholderText="login1, login2"/>
+                        <Button Grid.Column="2" Content="Add Members" Click="AddMembersClick"/>
+                    </Grid>
+                    <TextBlock Text="Status" FontWeight="Bold"/>
+                    <Border CornerRadius="8" Padding="8" Background="#1C072B" BorderBrush="#FF53E7" BorderThickness="1">
+                        <TextBlock Text="{Binding Status}" TextWrapping="Wrap"/>
+                    </Border>
+                </StackPanel>
+            </Border>
         </Grid>
+
+        <Grid Grid.Row="2" ColumnDefinitions="3*,2*" ColumnSpacing="14" MinHeight="0">
+            <Border CornerRadius="14" Padding="14" Background="#200B31" BorderBrush="#A800D3" BorderThickness="1.5">
+                <Grid RowDefinitions="Auto,*" RowSpacing="10" MinHeight="0">
+                    <TextBlock Text="Chat Messages" FontSize="18" FontWeight="Bold"/>
+                    <Border Grid.Row="1" BorderThickness="1" BorderBrush="#FF53E7" CornerRadius="10" Padding="8" Background="#170622" MinHeight="0">
+                        <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+                            <ItemsControl ItemsSource="{Binding Messages}">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate x:DataType="model:MessageModel">
+                                        <Border Margin="0,0,0,8" Padding="10" Background="#34124A" CornerRadius="10" BorderBrush="#FF53E7" BorderThickness="1">
+                                            <StackPanel>
+                                                <TextBlock Text="{Binding DisplaySender}" FontWeight="Bold" Foreground="#FF9CFF"/>
+                                                <TextBlock Text="{Binding Text}" TextWrapping="Wrap" Foreground="#FFF2FF"/>
+                                                <TextBlock Text="{Binding Timestamp}" FontSize="11" HorizontalAlignment="Right" Foreground="#FFC8FF"/>
+                                            </StackPanel>
+                                        </Border>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </ScrollViewer> 
+                    </Border>
+                </Grid>
+            </Border>
+
+            <Border Grid.Column="1" CornerRadius="14" Padding="14" Background="#200B31" BorderBrush="#A800D3" BorderThickness="1.5">
+                <Grid RowDefinitions="Auto,Auto,Auto,Auto,Auto,*" RowSpacing="10" MinHeight="0">
+                    <TextBlock Text="AI Settings" FontSize="18" FontWeight="Bold"/>
+                    <TextBlock Grid.Row="1" Text="LM Studio URL"/>
+                    <TextBox Grid.Row="2" Text="{Binding LmStudioUrl}"/>
+                    <TextBlock Grid.Row="3" Text="Model"/>
+                    <TextBox Grid.Row="4" Text="{Binding LmModel}"/>
+                    <Grid Grid.Row="5" RowDefinitions="Auto,*" RowSpacing="8" MinHeight="0">
+                        <TextBlock Text="System Prompt"/>
+                        <TextBox Grid.Row="1" Text="{Binding SystemPrompt}" AcceptsReturn="True" TextWrapping="Wrap" VerticalAlignment="Stretch"/>
+                    </Grid>
+                </Grid>
+            </Border>
+        </Grid>
+
+        <Border Grid.Row="3" CornerRadius="14" Padding="12" Background="#251038" BorderBrush="#A800D3" BorderThickness="1.5">
+            <Grid ColumnDefinitions="*,Auto,Auto,Auto,Auto" ColumnSpacing="10">
+                <TextBox Grid.Column="0" Text="{Binding CurrentMessage}" PlaceholderText="Write your message..." />
+                <Button Grid.Column="1" Content="Send" Click="SendPlainClick"/>
+                <Button Grid.Column="2" Content="Send Anon" Click="SendPlainAnonymousClick"/>
+                <Button Grid.Column="3" Content="Send AI" Click="SendClick"/>
+                <Button Grid.Column="4" Content="Send AI Anon" Click="SendAnonymousClick"/>
+            </Grid>
+        </Border>
     </Grid>
 </Window>
