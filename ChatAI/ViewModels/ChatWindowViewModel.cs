@@ -18,6 +18,8 @@ namespace ChatAI.ViewModels;
 
 public class ChatWindowViewModel : BaseVM, IAsyncDisposable
 {
+    
+    
     private readonly HttpClient _httpClient = new(new HttpClientHandler
     {
         ServerCertificateCustomValidationCallback = HttpClientHandler.DangerousAcceptAnyServerCertificateValidator
@@ -112,7 +114,7 @@ public class ChatWindowViewModel : BaseVM, IAsyncDisposable
     {
         try
         {
-            Status = "Authorizing...";
+            Status = "Авторизация...";
             _token = await EnsureAuthorizedAsync();
 
             _hubConnection = new HubConnectionBuilder()
@@ -141,14 +143,14 @@ public class ChatWindowViewModel : BaseVM, IAsyncDisposable
             });
 
             await _hubConnection.StartAsync();
-            Status = "Connected";
+            Status = "Подключенно";
 
             await LoadChatsAsync();
             await LoadMessagesAsync();
         }
         catch (Exception ex)
         {
-            Status = $"Connect failed: {ex.GetType().Name}: {ex.Message}";
+            Status = $"Ошибка подключения: {ex.GetType().Name}: {ex.Message}";
         }
     }
 
@@ -161,7 +163,7 @@ public class ChatWindowViewModel : BaseVM, IAsyncDisposable
         }
         catch (Exception ex)
         {
-            Status = $"Register failed: {ex.GetType().Name}: {ex.Message}";
+            Status = $"Ошибка регистрации: {ex.GetType().Name}: {ex.Message}";
         }
     }
 
@@ -175,7 +177,7 @@ public class ChatWindowViewModel : BaseVM, IAsyncDisposable
             if (TryParseData<CreateChatResult>(response.Data, out var chat) && chat is not null)
             {
                 ChatIdText = chat.Id.ToString();
-                Status = $"Chat created: {chat.Id}";
+                Status = $"Чат создан: {chat.Id}";
                 await LoadChatsAsync();
             }
             else
@@ -185,7 +187,7 @@ public class ChatWindowViewModel : BaseVM, IAsyncDisposable
         }
         catch (Exception ex)
         {
-            Status = $"Create chat failed: {ex.GetType().Name}: {ex.Message}";
+            Status = $"Ошибка создание чата: {ex.GetType().Name}: {ex.Message}";
         }
     }
 
@@ -213,7 +215,7 @@ public class ChatWindowViewModel : BaseVM, IAsyncDisposable
         }
         catch (Exception ex)
         {
-            Status = $"Load failed: {ex.GetType().Name}: {ex.Message}";
+            Status = $"Ошибка загрузки: {ex.GetType().Name}: {ex.Message}";
         }
     }
 
@@ -241,7 +243,7 @@ public class ChatWindowViewModel : BaseVM, IAsyncDisposable
         }
         catch (Exception ex)
         {
-            Status = $"Chats load failed: {ex.GetType().Name}: {ex.Message}";
+            Status = $"Ошибка загрузки чата: {ex.GetType().Name}: {ex.Message}";
         }
     }
 
@@ -254,7 +256,7 @@ public class ChatWindowViewModel : BaseVM, IAsyncDisposable
     public void ClearMessagesView()
     {
         Messages.Clear();
-        Status = "Chat view cleared (local only).";
+        Status = "Чат очищен.";
     }
 
     public async Task SendMessageAsync(bool anonymous)
@@ -277,8 +279,6 @@ public class ChatWindowViewModel : BaseVM, IAsyncDisposable
             CurrentMessage = string.Empty;
             await LoadMessagesAsync();
 
-            // Server sends GenerateResponse to another random member.
-            // If chat has only this client online, generate locally as fallback.
             var messages = await FetchMessagesAsync(chatId);
             if (messages is not null && messages.Count > 0)
             {
@@ -287,7 +287,7 @@ public class ChatWindowViewModel : BaseVM, IAsyncDisposable
         }
         catch (Exception ex)
         {
-            Status = $"Send failed: {ex.GetType().Name}: {ex.Message}";
+            Status = $"Ошибка сообщения: {ex.GetType().Name}: {ex.Message}";
         }
     }
 
@@ -310,11 +310,11 @@ public class ChatWindowViewModel : BaseVM, IAsyncDisposable
 
             CurrentMessage = string.Empty;
             await LoadMessagesAsync();
-            Status = "Message sent";
+            Status = "Сообщение отправлено";
         }
         catch (Exception ex)
         {
-            Status = $"Send failed: {ex.GetType().Name}: {ex.Message}";
+            Status = $"Ошибка сообщения: {ex.GetType().Name}: {ex.Message}";
         }
     }
 
@@ -330,7 +330,7 @@ public class ChatWindowViewModel : BaseVM, IAsyncDisposable
 
         if (members.Count == 0)
         {
-            Status = "Enter member logins separated by comma";
+            Status = "ыыыыыыы";
             return;
         }
 
@@ -341,7 +341,7 @@ public class ChatWindowViewModel : BaseVM, IAsyncDisposable
         }
         catch (Exception ex)
         {
-            Status = $"Add members failed: {ex.GetType().Name}: {ex.Message}";
+            Status = $"Добавить участников не удалось: {ex.GetType().Name}: {ex.Message}";
         }
     }
 
@@ -356,7 +356,7 @@ public class ChatWindowViewModel : BaseVM, IAsyncDisposable
 
         try
         {
-            Status = "Generating AI response...";
+            Status = "Генерация AI response...";
             var promptMessages = new List<LmChatMessage>
             {
                 new("system", SystemPrompt)
@@ -385,17 +385,17 @@ public class ChatWindowViewModel : BaseVM, IAsyncDisposable
             var answer = CleanAiAnswer(ExtractLmAnswer(content))?.Trim();
             if (string.IsNullOrWhiteSpace(answer))
             {
-                Status = "LM Studio returned empty answer";
+                Status = "LM Studio вернула пустой ответ.";
                 return;
             }
 
             await _hubConnection.InvokeAsync<ServerResponse>("SendMessageAi", $"[AI] {answer}", chatId);
             await LoadMessagesAsync();
-            Status = "AI response sent";
+            Status = "Ответ AI отправлен";
         }
         catch (Exception ex)
         {
-            Status = $"AI generation failed: {ex.GetType().Name}: {ex.Message}";
+            Status = $"AI генерации ошибки: {ex.GetType().Name}: {ex.Message}";
         }
         finally
         {
@@ -459,7 +459,7 @@ public class ChatWindowViewModel : BaseVM, IAsyncDisposable
     {
         if (ulong.TryParse(ChatIdText, out chatId)) return true;
 
-        Status = "ChatId must be number";
+        Status = "Идентификатор чата должен быть числом.";
         return false;
     }
 
@@ -507,7 +507,7 @@ public class ChatWindowViewModel : BaseVM, IAsyncDisposable
         }
 
         LmModel = first;
-        Status = $"Using LM model: {LmModel}";
+        Status = $"Использование модели LM: {LmModel}";
         return LmModel;
     }
 
@@ -622,13 +622,11 @@ public class ChatWindowViewModel : BaseVM, IAsyncDisposable
             return null;
         }
 
-        // OpenAI-like fallback for some LM Studio providers.
         if (!string.IsNullOrWhiteSpace(choice.Text))
         {
             return choice.Text;
         }
 
-        // Standard chat format: message.content can be string or structured array.
         if (choice.Message.ValueKind == JsonValueKind.Object)
         {
             if (TryGetTextFromMessage(choice.Message, out var fromMessage))
@@ -637,7 +635,6 @@ public class ChatWindowViewModel : BaseVM, IAsyncDisposable
             }
         }
 
-        // Streaming-like fallback: choices[0].delta.content
         if (choice.Delta.ValueKind == JsonValueKind.Object)
         {
             if (TryGetTextFromMessage(choice.Delta, out var fromDelta))
